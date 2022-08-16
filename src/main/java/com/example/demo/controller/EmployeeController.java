@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Employee;
 import com.example.demo.service.EmployeeService;
+import com.example.exception.EmployeeNotFoundException;
 
 @RestController
 public class EmployeeController {
@@ -22,7 +23,8 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping(value = "/getEmployee/{employeeID}")
-    public ResponseEntity<Employee> getEmployeeDetails(@PathVariable Integer employeeID) {
+    public ResponseEntity<Employee> getEmployeeDetails(@PathVariable Integer employeeID)
+            throws EmployeeNotFoundException {
         Employee employeeDetails = employeeService.getEmployee(employeeID);
         if (Objects.nonNull(employeeDetails.getEmployeeId())) {
             return new ResponseEntity<Employee>(employeeDetails, HttpStatus.OK);
@@ -34,9 +36,14 @@ public class EmployeeController {
     public ResponseEntity<List<Employee>> getWorkingEmployees() {
         return new ResponseEntity<List<Employee>>(employeeService.getWorkingEmployees(), HttpStatus.OK);
     }
+	
+	@GetMapping(value = "/getWorkingEmployees")
+    public ResponseEntity<List<Employee>> getWorkingEmpl() {
+        return new ResponseEntity<List<Employee>>(employeeService.getWorkingEmployees(), HttpStatus.OK);
+    }
 
     @PostMapping(value = "/saveEmployee")
-    public ResponseEntity<Employee> saveEmployee(@RequestBody Employee employee){
+    public ResponseEntity<Employee> saveEmployee(@RequestBody Employee employee) {
         return new ResponseEntity<Employee>(employeeService.saveEmployee(employee), HttpStatus.OK);
     }
 }

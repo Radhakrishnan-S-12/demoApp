@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Employee;
 import com.example.demo.repository.EmployeeRepo;
+import com.example.exception.EmployeeNotFoundException;
 
 @Service
 public class EmployeeService {
@@ -14,19 +15,20 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepo employeeRepo;
 
-    public Employee getEmployee(Integer employeeID) {
+    public Employee getEmployee(Integer employeeID) throws EmployeeNotFoundException {
+
         if (employeeRepo.findById(employeeID).isPresent()) {
             return employeeRepo.findById(employeeID).get();
+        } else {
+            throw new EmployeeNotFoundException("Invalid Employee ID " + employeeID);
         }
-        else
-            return new Employee();
     }
 
-    public List<Employee> getWorkingEmployees(){
+    public List<Employee> getWorkingEmployees() {
         return employeeRepo.getAllActiveEmployee();
     }
 
-    public Employee saveEmployee(Employee employeeDetails){
+    public Employee saveEmployee(Employee employeeDetails) {
         return employeeRepo.save(employeeDetails);
     }
 }
